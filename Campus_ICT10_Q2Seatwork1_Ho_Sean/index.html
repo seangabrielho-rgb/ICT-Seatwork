@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICT Club Checker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2023.11.1/core.js"></script>
+    <style>
+        body {
+        background-color: #0d081a;
+        color: #f3f0ff;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        }
+        .main-container {
+        width: 100%;
+        margin: auto;
+        padding: 20px;
+        }
+        .app-title {
+        color: #d8b4fe;
+        font-weight: 700;
+        letter-spacing: 1px;
+        }
+        .app-subtitle {
+        color: #a855f7;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        }
+        .card-custom {
+         background-color: #18112c;
+         border: 1px solid #3b2063;
+         border-radius: 12px;
+     padding: 24px;
+         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        .btn-purple {
+            background: linear-gradient(135deg, #7e22ce 0%, #9333ea 100%);
+            color: #ffffff;
+            font-weight: 60022;
+        }
+        .btn-purple:hover {
+         background: linear-gradient(135deg, #6b21a8 0%, #7e22ce 100%);
+         color: #ffffff;
+        }
+        .result-box {
+     display: flex;
+         align-items: center;
+         justify-content: center;
+         text-align: center;
+        }
+        .result-text {
+         color: #e9d5ff;
+         font-weight: 600;
+         font-size: 1.05rem;
+        }
+        footer {
+         background-color: #120a22;
+         border-top: 1px solid #281442;
+         color: #8b5cf6;
+         text-align: center;
+         padding: 14px 0;
+         font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="text-center mb-4">
+            <h2 class="app-title mb-1">ICT CLUB MEMBER CHECKER</h2>
+            <div class="app-subtitle">Candidate Verification System</div>
+        </div>
+        <div class="card-custom mb-4">
+            <div class="mb-3">
+                <input type="text" id="fname" class="form-control form-control-custom" placeholder="First Name">
+            </div>
+            <div class="mb-3">
+                <input type="text" id="lname" class="form-control form-control-custom" placeholder="Last Name">
+            </div>
+            <button id="btn-submit" class="btn btn-purple w-100">ENTER NOW!!!!</button>
+        </div>
+        <div class="result-box mb-4">
+            <div id="result" class="result-text">Enter candidate name above and click ENTER or e.</div>
+        </div>
+        <div class="members-card text-center">
+            <strong class="d-block mb-1 text-uppercase" style="letter-spacing: 1px;">Official Club Members:</strong>
+            <span id="members-list"></span>
+        </div>
+    </div>
+    <footer>
+        &copy; 2026 ICT Club, Seatwork 2, 2nd Quarter
+    </footer>
+    <script type="py">
+        from js import document, window
+        from pyodide.ffi import create_proxy
+
+        # 1. Python list of club members
+        club_members = [
+            "John Wick",
+            "Saint Nicolas",
+            "Logan Paul",
+            "Bomb Squad 14",
+            "Coco Martin"
+        ]
+
+        def check_membership(event):
+            # 2. Extract input values and form full name
+            first_name = document.getElementById("fname").value.strip()
+            last_name = document.getElementById("lname").value.strip()
+            full_name = f"{first_name} {last_name}".strip()
+
+            # Create lowercase versions for case-insensitive lookup
+            full_name_lower = full_name.lower()
+            members_lower = list(map(str.lower, club_members))
+
+            # 3. Membership check (Returns True/1 or False/0)
+            is_member = full_name_lower in members_lower
+
+            # 4. Message array indexed by boolean result (No conditionals or loops)
+            messages = [
+                f"Sorry not sorry {full_name}, your name is not on the list, get out.",
+                f"Congratulations {full_name}! You are now part of the ICT club."
+            ]
+
+            # 5. Display output
+            document.getElementById("result").innerText = messages[is_member]
+
+        def setup():
+            # Populate members list HTML once page elements are ready
+            document.getElementById("members-list").innerText = ", ".join(club_members)
+            button = document.getElementById("btn-submit")
+            button.addEventListener("click", create_proxy(check_membership))
+
+        # Wait for window load to avoid NoneType missing DOM element error
+        window.onload = create_proxy(setup())
+    </script>
+
+    
+</body>
+</html>
+<script type="py" src="main.py" config='{"packages": []}'></script>
+
+
